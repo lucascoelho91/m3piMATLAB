@@ -15,6 +15,11 @@ classdef m3pi < handle
            robot.serialPort = serial(robot.portName, 'Baudrate', robot.baudrate);
            fopen(robot.serialPort);
        end
+       
+       function setSerialPort(robot, ser)
+           robot.serialPort = ser;
+       end
+       
        function disconnect(robot)
            fclose(robot.serialPort);
        end

@@ -9,8 +9,6 @@ classdef m3piController < handle
         posey  % position in y of the robot
         theta  % orientation of the robot in radians
         
-        vlinear  % linear speed
-        wangular % angular speed
         
         kv   % linear speed constant for the speed controller
         kw   % angular speed constant for the speed controller 
@@ -50,8 +48,6 @@ classdef m3piController < handle
             function setGoal(robot, x, y)
                 robot.goalx = x;
                 robot.goaly = y;
-                robot.errx = robot.goalx - robot.posex;
-                robot.erry = robot.goaly - robot.posey;
             end
             
             function controlSpeed(robot)
@@ -59,41 +55,15 @@ classdef m3piController < handle
                 v = robot.kv*(cos(robot.theta)*robot.errx + sin(robot.theta)*robot.erry);
                 w = robot.kw*(-sin(robot.theta)*robot.errx/robot.d + cos(robot.theta)*robot.erry/robot.d);
                 
-                if abs(v) > 0.5
-                    v = 0.5 * v/abs(v);
+                fprintf('v: %1.2f\tw: %1.2f\terrx: %1.2f\terry: %1.2f', v, w, robot.errx, robot.erry);
+                if abs(v) > 1
+                    v = v/abs(v);
                 end
-                if abs(w) > 0.5
-                    w = 0.5 * w/abs(w);
+                if abs(w) > 1 
+                    w = w/abs(w);
                 end
                 robot.m3pi.sendSpeed(v, w);
-                robot.vlinear = v;
-                robot.wangular = w;
             end
-            
-            function controlSpeedDiff(robot)
-               xdot = (robot.goalx - robot.posex);
-               ydot = (robot.goaly - robot.posey);
-               
-               [v, w] = robot.xyTovw(xdot, ydot);
-               v = robot.kv * v;
-               w = robot.kw * w;
-               if abs(v) > 0.5
-                    v = 0.5 * v/abs(v);
-                end
-                if abs(w) > 0.5
-                    w = 0.5 * w/abs(w);
-                end
-               robot.m3pi.sendSpeed(v, w);
-               robot.vlinear = v;
-               robot.wangular = w;
-            end 
-            
-            function [v, w] = xyTovw(robot, xdot, ydot)
-                p = [cos(robot.theta),         sin(robot.theta);
-                        -sin(robot.theta)/robot.d, cos(robot.theta)/robot.d]* [xdot; ydot];
-                w = p(2);
-                v = p(1);
-            end   
             
             function answer = goalReached(robot)
                 if norm([robot.errx, robot.erry]) < robot.tol
