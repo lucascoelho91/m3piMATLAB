@@ -40,7 +40,7 @@ while(c ~= 'p')
         speedL = speedL*0.9
     elseif c == 'c'
         speedW = speedW*1.1
-    elseif c == 'v'
+    elseif c == 'v'www
         speedW = speedW*0.9
     elseif c == '1'
         rc = r;

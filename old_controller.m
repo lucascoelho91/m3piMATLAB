@@ -1,5 +1,7 @@
 clear all; close all; clc;
 %% Set optitrack
+
+addpath '@timetic' 
 frame = 'XYZ+ Plane';
 opti = optiTrackSetup(3000);
 %fclose(instrfind);
@@ -17,6 +19,9 @@ d = 0.05;
 tol = 0.2;
 
 rate = 0.1;
+rateplot = 0.5;
+controltic = timetic;
+plottic = timetic;
 
 controller = m3piController(r, kv, kw, d, tol);
 
@@ -39,6 +44,10 @@ axis([-1 5 -1 5]);
 grid on
 drawnow;
 j=0;
+
+
+tic(controltic);
+tic(plottic);
 %% Goals Loop
 for i=1:ngoals
     if(i>2)
@@ -51,14 +60,17 @@ for i=1:ngoals
         opti = readOptitrack(opti,frame);
         %opti.pose
         controller.setPose(opti.pose(1, 1), opti.pose(2, 1),  opti.pose(6,1));
-        controller.controlSpeed();
+        if(toc(controltic) > rate)
+            controller.controlSpeed();
+            tic(controltic);
+        end
 
-        j = j+1;
-        if(j>20)
+       
+        if(toc(plottic) > rateplot)
             fprintf('x: %1.2f  y: %1.2f  ang: %3.2f v: %1.2f  w: %1.2f\n', opti.pose(1, 1), opti.pose(2, 1), wrapToPi(opti.pose(6, 1)), controller.vlinear, controller.wangular);
              set(h, 'XData', opti.pose(1,1),'YData',opti.pose(2,1)); 
             drawnow;
-            j=0;
+            tic(plottic);
         end
     end
 end
