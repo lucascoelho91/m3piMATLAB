@@ -51,7 +51,7 @@ for i=1:ngoals
         opti = readOptitrack(opti,frame);
         %opti.pose
         controller.setPose(opti.pose(1, 1), opti.pose(2, 1),  opti.pose(6,1));
-        controller.controlSpeedDiff();
+        controller.controlSpeed();
 
         j = j+1;
         if(j>20)
