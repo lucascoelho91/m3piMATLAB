@@ -5,6 +5,7 @@ opti = optiTrackSetup(3000);
 %fclose(instrfind);
 %% create robot instance
 r = m3pi('/dev/ttyUSB0', 9600, ['40';'AE';'BB';'10']);
+%r = m3pi('/dev/ttyUSB0', 9600, ['40';'AD';'59';'34']);
 
 % maybe you will need to run this >> fclose(instrfind)
 r.connect();
@@ -34,7 +35,7 @@ figure
 h = plot(opti.pose(1, 1), opti.pose(2, 1),'Marker', 'o', 'MarkerSize', 15);
 hold on
 h2 = plot(goals(1, 1), goals(1, 2), 'Marker', '+', 'Color', 'r');
-axis([-5 5 -5 5]);
+axis([-1 5 -1 5]);
 grid on
 drawnow;
 j=0;
@@ -47,10 +48,10 @@ for i=1:ngoals
     end
     %% Position Loop
     while(controller.goalReached() == 0)
-        controller.controlSpeedDiff();
         opti = readOptitrack(opti,frame);
-        opti.pose
+        %opti.pose
         controller.setPose(opti.pose(1, 1), opti.pose(2, 1),  opti.pose(6,1));
+        controller.controlSpeedDiff();
 
         j = j+1;
         if(j>20)
