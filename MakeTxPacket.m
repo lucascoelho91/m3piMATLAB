@@ -37,11 +37,8 @@ Length = [Lhex(1:2) ; Lhex(3:4)];
 p1 = dec2hex(sum(hex2dec(mid)));
 
 % Calculate the checksum
-checksum = dec2hex(hex2dec('FF') - hex2dec(p1(end-1:end)));
+checksum = dec2hex(hex2dec('FF') - hex2dec(p1(end-1:end)), 2);
 
-if length(checksum) == 1
-    checksum = ['0', checksum];
-end
 
 % Combine the entire hex packet
 packet = [start ; Length ; mid ; checksum];
