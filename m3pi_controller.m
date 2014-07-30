@@ -66,6 +66,7 @@ k=0;
 while(1)
     
     opti = readOptitrack(opti,frame);
+    opti.pose
     j=0;
     %% Position Loop
     k = k+1;

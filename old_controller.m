@@ -7,7 +7,7 @@ opti = optiTrackSetup(3000);
 %fclose(instrfind);
 %% create robot instance
 id_robot = 2;
-%r = m3pi('/dev/ttyUSB0', 9600, ['40';'AE';'BB';'10']);
+r = m3pi('/dev/ttyUSB0', 9600, ['40';'AE';'BB';'10']);
 r = m3pi('/dev/ttyUSB0', 9600, ['40';'AD';'59';'34']);
 
 % maybe you will need to run this >> fclose(instrfind)
@@ -63,7 +63,7 @@ for i=1:ngoals
         %opti.pose
         controller.setPose(opti.pose(1, id_robot), opti.pose(2, id_robot),  opti.pose(6, id_robot));
         if(toc(controltic) > rate)
-            controller.controlSpeed();
+            controller.controlSpeedDiff();
             tic(controltic);
         end
 
